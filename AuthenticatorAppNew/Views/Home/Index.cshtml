@@ -1,0 +1,58 @@
+﻿@model AuthenticatorModel
+
+@{
+    ViewData["Title"] = "Authenticator App";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Authenticator</h1>
+
+    @if (!string.IsNullOrEmpty(Model.QrCodeImage))
+    {
+        <div class="alert alert-info">
+            <p>Scan this QR code with your authenticator app:</p>
+            <img src="@Model.QrCodeImage" alt="QR Code" />
+            <p class="mt-2">Secret: @Model.SecretKey</p>
+        </div>
+    }
+
+    <div class="card mx-auto" style="max-width: 300px;">
+        <div class="card-body">
+            <h2 class="card-title text-monospace">@Model.CurrentCode</h2>
+            <div class="progress mt-3">
+                <div class="progress-bar bg-success"
+                     role="progressbar"
+                     style="width: @(Model.RemainingSeconds * 100 / 30)%"
+                     aria-valuenow="@Model.RemainingSeconds"
+                     aria-valuemin="0"
+                     aria-valuemax="30"></div>
+            </div>
+            <p class="mt-2">Expires in: <span id="countdown">@Model.RemainingSeconds</span>s</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function updateCountdown() {
+            let seconds = parseInt(document.getElementById('countdown').textContent);
+            seconds--;
+
+            if (seconds <= 0) {
+                location.reload(); // Refresh when code expires
+                return;
+            }
+
+            document.getElementById('countdown').textContent = seconds;
+
+            // Update progress bar
+            const percent = Math.round((seconds / 30) * 100);
+            document.querySelector('.progress-bar').style.width = percent + '%';
+        }
+
+        setInterval(updateCountdown, 1000);
+    </script>
+
+
+}
+
