@@ -44,12 +44,12 @@ public class HomeController : Controller
             user.AuthenticatorKey = model.SecretKey;
             await _userManager.UpdateAsync(user);
 
-            model.QrCodeImage = GenerateQrCode($"otpauth://totp/MyApp:{user.Email}?secret={model.SecretKey}&issuer=MyApp");
+            model.QrCodeImage = GenerateQrCode($"otpauth://totp/RoAuth:{user.Email}?secret={model.SecretKey}&issuer=RoAuth");
         }
         else
         {
             model.SecretKey = user.AuthenticatorKey;
-            model.QrCodeImage = GenerateQrCode($"otpauth://totp/MyApp:{user.Email}?secret={model.SecretKey}&issuer=MyApp");
+            model.QrCodeImage = GenerateQrCode($"otpauth://totp/RoAuth:{user.Email}?secret={model.SecretKey}&issuer=RoAuth");
         }
 
         // Generate current code
