@@ -5,7 +5,7 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Authenticator</h1>
+    <h1 class="display-4">Authenticator for @Model.Username</h1>
 
     @if (!string.IsNullOrEmpty(Model.QrCodeImage))
     {
@@ -30,6 +30,10 @@
             <p class="mt-2">Expires in: <span id="countdown">@Model.RemainingSeconds</span>s</p>
         </div>
     </div>
+
+    <form method="post" asp-controller="Account" asp-action="Logout" class="mt-4">
+        <button type="submit" class="btn btn-danger">Logout</button>
+    </form>
 </div>
 
 @section Scripts {
@@ -39,20 +43,16 @@
             seconds--;
 
             if (seconds <= 0) {
-                location.reload(); // Refresh when code expires
+                location.reload();
                 return;
             }
 
             document.getElementById('countdown').textContent = seconds;
 
-            // Update progress bar
             const percent = Math.round((seconds / 30) * 100);
             document.querySelector('.progress-bar').style.width = percent + '%';
         }
 
         setInterval(updateCountdown, 1000);
     </script>
-
-
 }
-

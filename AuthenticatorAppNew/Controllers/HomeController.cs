@@ -1,4 +1,5 @@
 using AuthenticatorAppNew.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OtpNet;
 using QRCoder;
@@ -8,22 +9,47 @@ using System.Text;
 
 public class HomeController : Controller
 {
-    public IActionResult Index()
+    private readonly UserManager<ApplicationUser> _userManager;
+    private readonly SignInManager<ApplicationUser> _signInManager;
+    public HomeController(
+        UserManager<ApplicationUser> userManager,
+        SignInManager<ApplicationUser> signInManager)
     {
-        var model = new AuthenticatorModel();
+        _userManager = userManager;
+        _signInManager = signInManager;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Index()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null || !_signInManager.IsSignedIn(User))
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        var model = new AuthenticatorModel
+        {
+            Username = user.UserName
+        };
 
         // Generate or retrieve secret key
-        if (HttpContext.Session.GetString("SecretKey") == null)
+        if (string.IsNullOrEmpty(user.AuthenticatorKey))
         {
+            // Generate new key
             var key = KeyGeneration.GenerateRandomKey(20);
-            var base32Secret = Base32Encoding.ToString(key);
-            HttpContext.Session.SetString("SecretKey", base32Secret);
-            model.SecretKey = base32Secret;
-            model.QrCodeImage = GenerateQrCode($"otpauth://totp/AuthenticatorApp?secret={base32Secret}");
+            model.SecretKey = Base32Encoding.ToString(key);
+
+            // Store key in user record
+            user.AuthenticatorKey = model.SecretKey;
+            await _userManager.UpdateAsync(user);
+
+            model.QrCodeImage = GenerateQrCode($"otpauth://totp/MyApp:{user.Email}?secret={model.SecretKey}&issuer=MyApp");
         }
         else
         {
-            model.SecretKey = HttpContext.Session.GetString("SecretKey");
+            model.SecretKey = user.AuthenticatorKey;
+            model.QrCodeImage = GenerateQrCode($"otpauth://totp/MyApp:{user.Email}?secret={model.SecretKey}&issuer=MyApp");
         }
 
         // Generate current code
@@ -32,6 +58,20 @@ public class HomeController : Controller
         model.RemainingSeconds = totp.RemainingSeconds();
 
         return View(model);
+    }
+
+
+    [HttpGet]
+    public async Task<IActionResult> EnableAuthenticator()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null || !_signInManager.IsSignedIn(User))
+        {
+            return RedirectToAction("Login", "Account");
+        }
+
+        // Same as Index but without requiring 2FA setup
+        return RedirectToAction("Index");
     }
 
     private string GenerateQrCode(string text)
