@@ -17,7 +17,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 
-builder.Services.AddServices().AddRepositories();
+builder.Services.AddDatabase().AddServices().AddRepositories();
 
 // Add services to the container.
 
