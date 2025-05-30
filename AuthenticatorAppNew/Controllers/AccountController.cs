@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using OtpNet;
+using Services.Account;
 using Shared.Entities;
 
 namespace AuthenticatorAppNew.Controllers
@@ -8,13 +10,16 @@ namespace AuthenticatorAppNew.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly AccountServices _accountServices;
 
         public AccountController(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            AccountServices accountServices)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _accountServices = accountServices;
         }
 
         [HttpGet]
@@ -27,6 +32,7 @@ namespace AuthenticatorAppNew.Controllers
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
+
 
                 if (result.Succeeded)
                 {
@@ -55,10 +61,21 @@ namespace AuthenticatorAppNew.Controllers
 
                 if (result.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    bool isValidOtp = await _accountServices.IsValidOtp(model.Email, model.InputCode);
+                    if (isValidOtp)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "Invalid OTP Code.");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 }
 
-                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
             }
             return View(model);
         }

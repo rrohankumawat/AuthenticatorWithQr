@@ -39,5 +39,7 @@ namespace Shared.Entities
 
         [Display(Name = "Remember me?")]
         public bool RememberMe { get; set; }
+        [Required]
+        public string InputCode { get; set; }
     }
 }
