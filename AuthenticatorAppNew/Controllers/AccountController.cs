@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DTO;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OtpNet;
 using Services.Account;
@@ -24,6 +25,51 @@ namespace AuthenticatorAppNew.Controllers
 
         [HttpGet]
         public IActionResult Register() => View();
+
+        [HttpGet]
+        public IActionResult ForgotPassword() => View();
+
+        [HttpGet]
+        public IActionResult ResetPassword(string email)
+        {
+            var model = new ResetPasswordViewModel { Email = email };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                bool isValidOtp = await _accountServices.IsValidOtp(model.Email, model.InputCode);
+                if (isValidOtp)
+                {
+                    var user = await _userManager.FindByEmailAsync(model.Email);
+                    if (user != null)
+                    {
+                        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                        var resetResult = await _userManager.ResetPasswordAsync(user, token, model.Password);
+                        if (resetResult.Succeeded)
+                        {
+                            return RedirectToAction("Login", "Account");
+                        }
+                        foreach (var error in resetResult.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "User not found.");
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid OTP Code.");
+                }
+            }
+            return View(model);
+        }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
@@ -85,6 +131,29 @@ namespace AuthenticatorAppNew.Controllers
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            try
+            {
+                bool isValidOtp = await _accountServices.IsValidOtp(model.Email, model.InputCode);
+                if (isValidOtp)
+                {
+                    return RedirectToAction("ResetPassword", new { email = model.Email });
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid OTP Code.");
+                    return View(model);
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
     }
 }
