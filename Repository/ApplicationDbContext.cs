@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Shared.Entities;
 
-namespace AuthenticatorAppNew.Models
+namespace Repository
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {

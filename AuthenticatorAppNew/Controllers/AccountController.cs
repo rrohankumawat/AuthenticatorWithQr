@@ -1,6 +1,6 @@
-﻿using AuthenticatorAppNew.Models;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Entities;
 
 namespace AuthenticatorAppNew.Controllers
 {

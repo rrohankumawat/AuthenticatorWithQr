@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace AuthenticatorAppNew.Models
+namespace Shared.Entities
 {
     public class AuthenticatorModel
     {

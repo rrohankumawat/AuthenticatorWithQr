@@ -1,3 +1,13 @@
 .vs
 AuthenticatorAppNew/obj
 AuthenticatorAppNew/bin
+Domain/bin
+Domain/obj
+DTO/bin
+DTO/obj
+Repository/bin
+Repository/obj
+Services/bin
+Services/obj
+Shared/bin
+Shared/obj

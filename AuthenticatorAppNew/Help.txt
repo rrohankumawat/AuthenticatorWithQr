@@ -1,0 +1,3 @@
+﻿Make sure your default project is selected AuthenticatorAppNew in nugate package console
+
+Add-Migration Restart -Project Repository -StartupProject AuthenticatorAppNew

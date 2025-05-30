@@ -1,6 +1,8 @@
-using AuthenticatorAppNew.Models;
+using AuthenticatorAppNew.Extension;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Repository;
+using Shared.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +16,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
+
+builder.Services.AddServices().AddRepositories();
 
 // Add services to the container.
 

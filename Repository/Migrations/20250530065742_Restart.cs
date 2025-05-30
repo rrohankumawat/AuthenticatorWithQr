@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace AuthenticatorAppNew.Migrations
+namespace Repository.Migrations
 {
     /// <inheritdoc />
-    public partial class initialmigration : Migration
+    public partial class Restart : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

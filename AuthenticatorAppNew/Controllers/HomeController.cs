@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OtpNet;
 using QRCoder;
+using Shared.Entities;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Text;
