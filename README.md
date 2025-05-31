@@ -51,14 +51,19 @@ Your project follows a clean and modular folder structure:
 AuthenticatorAppNew.sln → Visual Studio Solution
 │
 ├── AuthenticatorAppNew/ → Main ASP.NET Core MVC project (UI, Controllers, Views)
+
 │
 ├── Domain/ → Core domain models and business logic
+
 │
 ├── DTO/ → Data Transfer Objects used between layers
+
 │
 ├── Repository/ → Data access layer (EF Core/Dapper Repositories)
+
 │
 ├── Services/ → Application services (Authentication, TOTP logic, etc.)
+
 │
 └── Shared/ → Common helpers, utilities, constants, and enums
 
