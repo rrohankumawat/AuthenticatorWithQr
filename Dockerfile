@@ -1,16 +1,22 @@
-# Use official ASP.NET runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-WORKDIR /app
-EXPOSE 80
-
-# Build stage
+# Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
-COPY . .
-RUN dotnet publish -c Release -o /app/publish
 
-# Final stage
-FROM base AS final
+# Copy csproj and restore
+COPY ["AuthenticatorAppNew/AuthenticatorAppNew.csproj", "AuthenticatorAppNew/"]
+RUN dotnet restore "AuthenticatorAppNew/AuthenticatorAppNew.csproj"
+
+# Copy everything else and build
+COPY . .
+WORKDIR "/src/AuthenticatorAppNew"
+RUN dotnet publish "AuthenticatorAppNew.csproj" -c Release -o /app/publish
+
+# Stage 2: Runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
+
+# Get the PORT from environment for Render compatibility
+ENV ASPNETCORE_URLS=http://+:$PORT
+
 ENTRYPOINT ["dotnet", "AuthenticatorAppNew.dll"]
