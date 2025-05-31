@@ -40,6 +40,8 @@ The app generates a QR code that can be scanned using **any TOTP-compatible auth
 - ASP.NET Core 8.0 (MVC)
 - Entity Framework Core
 - ASP.NET Core Identity
+- SQL Server
+- Docker Containerisation 
 - QRCoder (QR Code Generator)
 - Custom TOTP Implementation
 - Modular Solution Architecture
