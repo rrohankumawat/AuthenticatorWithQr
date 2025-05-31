@@ -8,7 +8,7 @@ RUN dotnet restore "AuthenticatorAppNew/AuthenticatorAppNew.csproj"
 
 # Copy everything else and build
 COPY . .
-WORKDIR "/src/AuthenticatorAppNew"
+WORKDIR "/AuthenticatorAppNew"
 RUN dotnet publish "AuthenticatorAppNew.csproj" -c Release -o /app/publish
 
 # Stage 2: Runtime
