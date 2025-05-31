@@ -1,6 +1,6 @@
 # 🔐 ASP.NET Core (.NET 8) - Google Authenticator with TOTP (2FA)
 
-Project Url: https://www.tinyurl.com/roauth
+Live Url: https://www.tinyurl.com/roauth
 
 This is a modular and secure authentication system built with **ASP.NET Core (.NET 8)**. It features standard authentication (login, registration, forgot/reset password) along with **Two-Factor Authentication (2FA)** using **TOTP (Time-based One-Time Passwords)** and a scannable QR code.
 
