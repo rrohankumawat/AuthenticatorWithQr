@@ -5,6 +5,8 @@ using Repository;
 using Shared.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+builder.WebHost.UseUrls($"http://*:{port}");
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
