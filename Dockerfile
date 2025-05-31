@@ -8,7 +8,7 @@ RUN dotnet restore "AuthenticatorAppNew/AuthenticatorAppNew.csproj"
 
 # Copy everything else and build
 COPY . .
-WORKDIR "/AuthenticatorAppNew"
+WORKDIR "/src/AuthenticatorAppNew"
 RUN dotnet publish "AuthenticatorAppNew.csproj" -c Release -o /app/publish
 
 # Stage 2: Runtime
@@ -16,7 +16,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Get the PORT from environment for Render compatibility
+# For Render to work with PORT
 ENV ASPNETCORE_URLS=http://+:$PORT
 
 ENTRYPOINT ["dotnet", "AuthenticatorAppNew.dll"]
